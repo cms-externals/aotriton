@@ -18,7 +18,7 @@ option(AOTRITON_NO_SHARED "Disable shared object build. Incompatible with AOTRIT
 option(AOTRITON_NO_PYTHON "Disable python binding build" OFF)
 option(AOTRITON_ENABLE_ASAN "Enable Address Sanitizer. Implies -g" OFF)
 set(TARGET_GPUS "MI200;MI300X" CACHE STRING "Target Architecture (Note here uses Trade names)")
-set(AMDHSA_LD_PRELOAD "/opt/rocm/lib/libhsa-runtime64.so" CACHE STRING "Workaround of libamdhip64.so.5: undefined symbol: hsa_amd_memory_async_copy_on_engine")
+set(AMDHSA_LD_PRELOAD "$ENV{ROCM_ROOT}/lib/libhsa-runtime64.so" CACHE STRING "Workaround of libamdhip64.so.5: undefined symbol: hsa_amd_memory_async_copy_on_engine")
 
 # GPU kernel compression related options
 option(AOTRITON_COMPRESS_KERNEL "Enable GPU kernel compression with zstd. Fail when zstd is unavailable. Only effective for AOTriton API V2" ON)
@@ -51,7 +51,7 @@ if(AOTRITON_COMPRESS_KERNEL)
     endif()
 endif()
 
-set(AOTRITON_EXTRA_COMPILER_OPTIONS "-I/opt/rocm/include/ ")
+set(AOTRITON_EXTRA_COMPILER_OPTIONS "-I$ENV{ROCM_ROOT}/include/ ")
 if(AOTRITON_ENABLE_ASAN)
     set(AOTRITON_EXTRA_COMPILER_OPTIONS "${AOTRITON_EXTRA_COMPILER_OPTIONS} -g -fsanitize=address -fno-omit-frame-pointer")
     set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${AOTRITON_EXTRA_COMPILER_OPTIONS}")
@@ -67,31 +67,32 @@ endif()
 
 set(Python_ARTIFACTS_INTERACTIVE TRUE)
 
+# Disable venv
 # Not a target, we need to override Python3_EXECUTABLE later
-execute_process(COMMAND "${Python3_EXECUTABLE}" -m venv "${VENV_DIR}")
+#execute_process(COMMAND "${Python3_EXECUTABLE}" -m venv "${VENV_DIR}")
 
-set(ENV{VIRTUAL_ENV} "${VENV_DIR}")
+#set(ENV{VIRTUAL_ENV} "${VENV_DIR}")
 # set(Python3_FIND_VIRTUALENV FIRST)
 # unset(Python3_EXECUTABLE)
 # find_package(Python3 COMPONENTS Interpreter REQUIRED)
 
-execute_process(COMMAND ${CMAKE_COMMAND} -E env VIRTUAL_ENV=${VENV_DIR} PATH="${VENV_DIR}/bin:$ENV{PATH}" python -m site --user-site OUTPUT_VARIABLE VENV_SITE)
-message("VENV_SITE ${VENV_SITE}")
+#execute_process(COMMAND ${CMAKE_COMMAND} -E env VIRTUAL_ENV=${VENV_DIR} PATH="${VENV_DIR}/bin:$ENV{PATH}" python -m site --user-site OUTPUT_VARIABLE VENV_SITE)
+#message("VENV_SITE ${VENV_SITE}")
 
-add_custom_target(aotriton_venv_req
-  COMMAND ${CMAKE_COMMAND} -E env VIRTUAL_ENV=${VENV_DIR} PATH="${VENV_DIR}/bin:$ENV{PATH}" python -m pip install -r "${CMAKE_CURRENT_LIST_DIR}/requirements.txt"
-  BYPRODUCTS "${VENV_DIR}/bin/pytest"
-)
+#add_custom_target(aotriton_venv_req
+#  COMMAND ${CMAKE_COMMAND} -E env VIRTUAL_ENV=${VENV_DIR} PATH="${VENV_DIR}/bin:$ENV{PATH}" python -m pip install -r "${CMAKE_CURRENT_LIST_DIR}/requirements.txt"
+#  BYPRODUCTS "${VENV_DIR}/bin/pytest"
+#)
 
 set(TRITON_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/triton_build")
 execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory "${TRITON_BUILD_DIR}")
 add_custom_target(aotriton_venv_triton
-  COMMAND ${CMAKE_COMMAND} -E env VIRTUAL_ENV=${VENV_DIR} PATH="${VENV_DIR}/bin:$ENV{PATH}" TRITON_BUILD_DIR=${TRITON_BUILD_DIR} python setup.py develop
+  COMMAND ${CMAKE_COMMAND} -E env TRITON_BUILD_DIR=${TRITON_BUILD_DIR} python setup.py develop
   # COMMAND ${CMAKE_COMMAND} -E env VIRTUAL_ENV=${VENV_DIR} python -m pip show triton
   WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/third_party/triton/python/"
   BYPRODUCTS "${VENV_SITE}/triton/_C/libtriton.so"
   )
-add_dependencies(aotriton_venv_triton aotriton_venv_req)
+#add_dependencies(aotriton_venv_triton aotriton_venv_req)
 
 if(AOTRITON_BUILD_V1)
     add_subdirectory(csrc)
