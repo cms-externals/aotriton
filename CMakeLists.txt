@@ -87,7 +87,7 @@ set(Python_ARTIFACTS_INTERACTIVE TRUE)
 set(TRITON_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/triton_build")
 execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory "${TRITON_BUILD_DIR}")
 add_custom_target(aotriton_venv_triton
-  COMMAND ${CMAKE_COMMAND} -E env TRITON_BUILD_DIR=${TRITON_BUILD_DIR} python setup.py develop
+  COMMAND ${CMAKE_COMMAND} -E env TRITON_BUILD_DIR=${TRITON_BUILD_DIR} python3 setup.py develop
   # COMMAND ${CMAKE_COMMAND} -E env VIRTUAL_ENV=${VENV_DIR} python -m pip show triton
   WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/third_party/triton/python/"
   BYPRODUCTS "${VENV_DIR}/triton/_C/libtriton.so"
