@@ -18,7 +18,7 @@ option(AOTRITON_NO_SHARED "Disable shared object build. Incompatible with AOTRIT
 option(AOTRITON_NO_PYTHON "Disable python binding build" OFF)
 option(AOTRITON_ENABLE_ASAN "Enable Address Sanitizer. Implies -g" OFF)
 set(TARGET_GPUS "MI200;MI300X" CACHE STRING "Target Architecture (Note here uses Trade names)")
-set(AMDHSA_LD_PRELOAD "$ENV{ROCM_ROOT}/lib/libhsa-runtime64.so" CACHE STRING "Workaround of libamdhip64.so.5: undefined symbol: hsa_amd_memory_async_copy_on_engine")
+set(AMDHSA_LD_PRELOAD "$ENV{ROCM_PATH}/lib/libhsa-runtime64.so" CACHE STRING "Workaround of libamdhip64.so.5: undefined symbol: hsa_amd_memory_async_copy_on_engine")
 
 # GPU kernel compression related options
 option(AOTRITON_COMPRESS_KERNEL "Enable GPU kernel compression with zstd. Fail when zstd is unavailable. Only effective for AOTriton API V2" ON)
@@ -51,7 +51,7 @@ if(AOTRITON_COMPRESS_KERNEL)
     endif()
 endif()
 
-set(AOTRITON_EXTRA_COMPILER_OPTIONS "-I$ENV{ROCM_ROOT}/include/ ")
+set(AOTRITON_EXTRA_COMPILER_OPTIONS "-I$ENV{ROCM_PATH}/include/ ")
 if(AOTRITON_ENABLE_ASAN)
     set(AOTRITON_EXTRA_COMPILER_OPTIONS "${AOTRITON_EXTRA_COMPILER_OPTIONS} -g -fsanitize=address -fno-omit-frame-pointer")
     set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${AOTRITON_EXTRA_COMPILER_OPTIONS}")
@@ -90,7 +90,7 @@ add_custom_target(aotriton_venv_triton
   COMMAND ${CMAKE_COMMAND} -E env TRITON_BUILD_DIR=${TRITON_BUILD_DIR} python setup.py develop
   # COMMAND ${CMAKE_COMMAND} -E env VIRTUAL_ENV=${VENV_DIR} python -m pip show triton
   WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/third_party/triton/python/"
-  BYPRODUCTS "${VENV_SITE}/triton/_C/libtriton.so"
+  BYPRODUCTS "${VENV_DIR}/triton/_C/libtriton.so"
   )
 #add_dependencies(aotriton_venv_triton aotriton_venv_req)
 

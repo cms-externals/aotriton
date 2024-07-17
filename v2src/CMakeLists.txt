@@ -12,7 +12,7 @@ if(AOTRITON_COMPRESS_KERNEL)
   list(APPEND AOTRITON_GEN_FLAGS "--enable_zstd" "${ZSTD_EXEC}")
 endif(AOTRITON_COMPRESS_KERNEL)
 add_custom_target(aotriton_v2_gen_compile
-  COMMAND ${CMAKE_COMMAND} -E env VIRTUAL_ENV=${VENV_DIR} PATH="${VENV_DIR}/bin:$ENV{PATH}" python -m v2python.generate_compile --target_gpus ${TARGET_GPUS} --build_dir "${AOTRITON_V2_BUILD_DIR}" ${AOTRITON_GEN_FLAGS}
+  COMMAND ${CMAKE_COMMAND} -E env PATH="${VENV_DIR}/bin:$ENV{PATH}" python -m v2python.generate_compile --target_gpus ${TARGET_GPUS} --build_dir "${AOTRITON_V2_BUILD_DIR}" ${AOTRITON_GEN_FLAGS}
   WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
   BYPRODUCTS "${AOTRITON_V2_BUILD_DIR}/Makefile.compile"
 )
