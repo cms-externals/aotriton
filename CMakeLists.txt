@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 
 project(AOTriton CXX C)
 
-add_subdirectory(third_party/pybind11)
+# add_subdirectory(third_party/pybind11)
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
 
 set(CMAKE_CXX_COMPILER hipcc)

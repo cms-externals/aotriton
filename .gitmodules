@@ -1,6 +1,7 @@
 [submodule "third_party/triton"]
 	path = third_party/triton
-	url = https://github.com/ROCmSoftwarePlatform/triton.git
+	url = https://github.com/cms-externals/triton.git
+        branch = cms/9b73a543a
 [submodule "third_party/incbin"]
 	path = third_party/incbin
 	url = https://github.com/graphitemaster/incbin.git
