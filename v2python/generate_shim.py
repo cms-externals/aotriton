@@ -160,7 +160,7 @@ class ShimMakefileGenerator(MakefileGenerator):
         super().write_prelude()
         print(f"HIPCC={COMPILER}", file=f)
         print(f"AR={LINKER}", file=f)
-        print(f"EXTRA_COMPILER_OPTIONS=-O0 -g -ggdb3 --gcc-toolchain=$GCC_ROOT", file=f)
+        print(f"EXTRA_COMPILER_OPTIONS=-O0 -g -ggdb3 --gcc-toolchain=$GCC_ROOT --target=x86_64-redhat-linux-gnu", file=f)
         # print(f"EXTRA_COMPILER_OPTIONS=", file=f)
         print(f"", file=f)
         print('', file=self._out)

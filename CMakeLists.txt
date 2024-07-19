@@ -51,7 +51,7 @@ if(AOTRITON_COMPRESS_KERNEL)
     endif()
 endif()
 
-set(AOTRITON_EXTRA_COMPILER_OPTIONS "-I$ENV{ROCM_PATH}/include/ --gcc-toolchain=$ENV{GCC_ROOT}")
+set(AOTRITON_EXTRA_COMPILER_OPTIONS "-I$ENV{ROCM_PATH}/include/ --gcc-toolchain=$ENV{GCC_ROOT} --target=x86_64-redhat-linux-gnu")
 if(AOTRITON_ENABLE_ASAN)
     set(AOTRITON_EXTRA_COMPILER_OPTIONS "${AOTRITON_EXTRA_COMPILER_OPTIONS} -g -fsanitize=address -fno-omit-frame-pointer")
     set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${AOTRITON_EXTRA_COMPILER_OPTIONS}")
