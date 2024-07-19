@@ -51,7 +51,7 @@ if(AOTRITON_COMPRESS_KERNEL)
     endif()
 endif()
 
-set(AOTRITON_EXTRA_COMPILER_OPTIONS "-I$ENV{ROCM_PATH}/include/ ")
+set(AOTRITON_EXTRA_COMPILER_OPTIONS "-I$ENV{ROCM_PATH}/include/ --gcc-toolchain=$ENV{GCC_ROOT}")
 if(AOTRITON_ENABLE_ASAN)
     set(AOTRITON_EXTRA_COMPILER_OPTIONS "${AOTRITON_EXTRA_COMPILER_OPTIONS} -g -fsanitize=address -fno-omit-frame-pointer")
     set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${AOTRITON_EXTRA_COMPILER_OPTIONS}")
@@ -67,7 +67,6 @@ endif()
 
 set(Python_ARTIFACTS_INTERACTIVE TRUE)
 
-# Disable venv
 # Not a target, we need to override Python3_EXECUTABLE later
 #execute_process(COMMAND "${Python3_EXECUTABLE}" -m venv "${VENV_DIR}")
 
