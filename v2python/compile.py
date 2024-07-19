@@ -14,6 +14,7 @@ import triton
 import shutil
 import subprocess
 import json
+import os
 
 desc = """
 Triton ahead-of-time compiler:
@@ -121,11 +122,13 @@ def main():
         print(f'{ccinfo.fn=}')
         print(f'{hsaco_path=}')
 
+    rocm_path = os.getenv("ROCM_PATH", "/opt/rocm")
+
     if hsaco_path is not None:
         if args.nostrip:
             shutil.copy(hsaco_path, out_path.with_suffix('.hsaco'))
         else:
-            subprocess.run(['/opt/rocm/llvm/bin/llvm-objcopy', '--remove-section', '.debug_*', str(hsaco_path), str(out_path.with_suffix('.hsaco'))])
+            subprocess.run([f'{rocm_path}/llvm/bin/llvm-objcopy', '--remove-section', '.debug_*', str(hsaco_path), str(out_path.with_suffix('.hsaco'))])
 
     with out_path.with_suffix('.json').open("w") as fp:
         json.dump(ccinfo.metadata, fp, indent=2)

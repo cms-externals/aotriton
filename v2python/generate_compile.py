@@ -8,6 +8,7 @@ import shutil
 import argparse
 import json
 from pathlib import Path
+import os
 
 SOURCE_PATH = Path(__file__).resolve()
 COMPILER = SOURCE_PATH.parent / 'compile.py'
@@ -67,8 +68,9 @@ def gen_from_kernel(args, k, build_dir, makefile):
 def main():
     args = parse()
     build_dir = Path(args.build_dir)
+    rocm_path = os.getenv("ROCM_PATH", "/opt/rocm")
     with open(build_dir / 'Makefile.compile', 'w') as f:
-        print('LIBHSA_RUNTIME64=/opt/rocm/lib/libhsa-runtime64.so\n', file=f)
+        print(f'LIBHSA_RUNTIME64={rocm_path}/lib/libhsa-runtime64.so\n', file=f)
         makefile_content = io.StringIO()
         per_kernel_targets = []
         for k in triton_kernels:
