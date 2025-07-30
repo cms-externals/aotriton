@@ -35,10 +35,9 @@ endif()
 
 find_package(Python3 ${AOTRITON_MIN_PYTHON} COMPONENTS Interpreter REQUIRED)
 # Must set this otherwise hip-config-amd.cmake cannot find AMDDeviceLibs
-list(APPEND CMAKE_PREFIX_PATH "/opt/rocm")
+list(APPEND CMAKE_PREFIX_PATH "$ENV{ROCM_ROOT}")
 find_package(hip REQUIRED)
 
-set(VENV_DIR "${CMAKE_CURRENT_BINARY_DIR}/venv" CACHE STRING "Virtual Environment Directory")
 option(AOTRITON_NO_PYTHON "Disable python binding build" OFF)
 option(AOTRITON_ENABLE_ASAN "Enable Address Sanitizer. Implies -g" OFF)
 option(AOTRITON_BUILD_FOR_TUNING "Build all GPU kernels and set -DAOTRITON_BUILD_FOR_TUNING=1 (=0 otherwise)" OFF)
@@ -85,19 +84,14 @@ endif()
 set(Python_ARTIFACTS_INTERACTIVE TRUE)
 
 # Not a target, we need to override Python3_EXECUTABLE later
-execute_process(COMMAND "${Python3_EXECUTABLE}" -m venv "${VENV_DIR}")
-
-set(ENV{VIRTUAL_ENV} "${VENV_DIR}")
-message("VENV_DIR ${VENV_DIR}")
 # set(Python3_FIND_VIRTUALENV FIRST)
 # unset(Python3_EXECUTABLE)
 # find_package(Python3 COMPONENTS Interpreter REQUIRED)
 
-execute_process(COMMAND ${CMAKE_COMMAND} -E env VIRTUAL_ENV=${VENV_DIR} "${VENV_DIR}/bin/python" -c "import site; print(site.getsitepackages()[0], end='')" OUTPUT_VARIABLE VENV_SITE)
+execute_process(COMMAND ${CMAKE_COMMAND} -E env "python3" -c "import site; print(site.getsitepackages()[0], end='')" OUTPUT_VARIABLE VENV_SITE)
 # string(STRIP "${VENV_SITE}" VENV_SITE)
-message("VENV_SITE ${VENV_SITE}")
 
-execute_process(COMMAND ${CMAKE_COMMAND} -E env VIRTUAL_ENV=${VENV_DIR} "${VENV_DIR}/bin/python" -m pip install -r "${CMAKE_CURRENT_LIST_DIR}/requirements.txt")
+execute_process(COMMAND ${CMAKE_COMMAND} -E env "python3" -m pip install -r "${CMAKE_CURRENT_LIST_DIR}/requirements.txt")
 
 # AOTRITON_NOIMAGE_MODE does not need Triton
 if(NOT AOTRITON_NOIMAGE_MODE)
@@ -108,7 +102,7 @@ if(NOT AOTRITON_NOIMAGE_MODE)
   set(AOTRITON_TRITON_SO "${VENV_SITE}/triton/_C/libtriton.so")
 
   add_custom_command(OUTPUT "${AOTRITON_TRITON_SO}"
-    COMMAND ${CMAKE_COMMAND} -E env VIRTUAL_ENV=${VENV_DIR} TRITON_BUILD_DIR=${TRITON_BUILD_DIR} "${VENV_DIR}/bin/python" -m pip install .
+    COMMAND ${CMAKE_COMMAND} -E env TRITON_BUILD_DIR=${TRITON_BUILD_DIR} "python3" -m pip install .
     # COMMAND ${CMAKE_COMMAND} -E env VIRTUAL_ENV=${VENV_DIR} python -m pip show triton
     WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/third_party/triton/python/"
   )
