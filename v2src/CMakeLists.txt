@@ -188,8 +188,7 @@ set_target_properties(aotriton_v2 PROPERTIES VERSION
 
 execute_process(
   COMMAND ${CMAKE_COMMAND}
-  -E env VIRTUAL_ENV=${VENV_DIR}
-  "${VENV_DIR}/bin/python" -m v2python.ld_script
+  -E "python3" -m v2python.ld_script
   -o "${AOTRITON_V2_BUILD_DIR}/set_aotriton_version.ld"
   ${AOTRITON_VERSION_MAJOR_INT}
   ${AOTRITON_VERSION_MINOR_INT}
