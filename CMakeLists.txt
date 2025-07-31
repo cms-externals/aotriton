@@ -71,11 +71,12 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/aotriton/config.h
 
 # Kernel Storage V2 uses xz/LZMA for compression
 include(FindPkgConfig)
-pkg_search_module(LZMA REQUIRED liblzma)
+#pkg_search_module(LZMA REQUIRED liblzma)
+find_package(LibLZMA REQUIRED)
 add_library(lzma_interface INTERFACE)
-target_link_libraries(lzma_interface INTERFACE ${LZMA_LIBRARIES})
-target_link_directories(lzma_interface INTERFACE ${LZMA_LIBRARY_DIRS})
-target_include_directories(lzma_interface INTERFACE ${LZMA_INCLUDE_DIRS})
+target_link_libraries(lzma_interface INTERFACE ${LIBLZMA_LIBRARIES})
+target_link_directories(lzma_interface INTERFACE ${LIBLZMA_LIBRARY_DIRS})
+target_include_directories(lzma_interface INTERFACE ${LIBLZMA_INCLUDE_DIRS})
 
 if(AOTRITON_ENABLE_ASAN)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -fsanitize=address -fno-omit-frame-pointer")
