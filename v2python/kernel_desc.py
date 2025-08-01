@@ -282,7 +282,7 @@ class KernelDescription(object):
     def write_shim_source(self, fout, object_files, noimage_mode):
         put_kernel_arguments_on_stack, let_kernel_arguments = self.codegen_kernel_arguments()
         if not noimage_mode:
-            print("!!ASSERT!!", self.SHIM_KERNEL_NAME, object_files[0].binary_entrance)
+            print(f"!!ASSERT!! {self.SHIM_KERNEL_NAME=}, {object_files[0].binary_entrance=}, {object_files=}, {object_files[0]=}")
             assert self.SHIM_KERNEL_NAME == object_files[0].binary_entrance
         d = { 'kernel_family_name'  : self.KERNEL_FAMILY,
               'triton_kernel_name'  : self.SHIM_KERNEL_NAME,
